@@ -22,7 +22,7 @@ jobs:
         run: |
           echo "var1 is ${{ env.var1 }}"
           echo "var2 is ${{ env.var2 }}"
-          echo "var3 is $localvar
+          echo "var3 is $localvar"
       env:
        localvar: "this local var"
 
