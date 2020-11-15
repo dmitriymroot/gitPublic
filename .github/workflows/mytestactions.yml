@@ -23,5 +23,5 @@ jobs:
     
     steps: 
       - name: echo deploy ver
-        run: echo "deploy_version is "${{ env.deploy_version }}"
+        run: echo "deploy_version is ${{ env.deploy_version }}"
       
