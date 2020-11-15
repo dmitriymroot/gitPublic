@@ -1,0 +1,68 @@
+flash(python)  - github - github actions - s3backup - aws elastic beanstalk
+
+1) aws iam - add user , with polices amazonS3FullAcces + AWSElasticBeanstalkFullAccess + (need secret key)
+2) create s3bucket 
+3) create elastic beanstalk - name MyFlask - platform python -sample application
+4) github - create secret . add secret My_aws_access_key , add secret My_aws_secret_key
+5) github application create:
+
+ name: CI-CD-Pipeline-to-AWS
+ env:
+    ElasticBeanstalk_S3_name                 : "nameoFs3bucket"
+    ElasticBeanstalk_Application_name        : "MyFlask"
+    ElasticBeanstalk_Env_name                : "MyFlask-env"
+    Deploy_Package_name                      : "flash_app_${{ github.sha }}.zip
+    AWS_Region_Name                          : "us-west-1"
+ on: 
+ 	push:
+		branches:
+		 - master
+
+        jobs:
+         my_ci;
+           runs-on: ubuntu-latest
+		
+           steps:
+           - name: Git clone rep
+             uses: actions/checkout@v1
+           - name: create deploy pakage zip
+             run : zip -r ${{ env.Deploy_Packege_name }} ./ -x *-git*
+           - name: configure my  aws credentials
+             uses: aws-actions/configure-aws-credential@v1
+             with:
+               aws-access-key-id : ${{ secrets.My_aws_access_key }}
+               aws-secret-access-key : ${{ secrets.My_aws_secret_key }}
+               aws-region            : ${{ env.AWS_Region_Name }}
+
+            -name: Copy deploy package to s3 bucket
+             run : aws s3 cp ${{ env.Deploy_package_name }} s3://${{ env.ElasticBeanstalk_S3_name }}/ 
+
+            -name: Print Complete CI 
+             run : echo " CI pipeline part finish succesfull"         
+            
+
+           my_cd;
+             runs-on: ubuntu-latest
+             needs: [my_ci] 
+             
+             steps: 
+           
+           - name: configure my  aws credentials
+             uses: aws-actions/configure-aws-credential@v1
+             with:
+               aws-access-key-id : ${{ secrets.My_aws_access_key }}
+               aws-secret-access-key : ${{ secrets.My_aws_secret_key }}
+               aws-region            : ${{ env.AWS_Region_Name }}
+           
+            - name : create new elasticbeanstalk app
+              run: |
+                 aws elasticbeanstalk create-application-version \
+                  --application-name ${{ env.ElasticBeanstalk_Application_name }} \
+                  --source-bundle S3Bucket="${{ env.EslaticBeanstalk_S3_name }}", S3key="${{ env.Deploy_Package_name }}" \
+                  --version-label "Ver-${{ github.sha }}" \
+                  --description " CommitSHA-${{ github.sha }}"
+             
+             - name: Deploy new ElasticBeanstalk app
+               run: aws elasticbeanstalk update-environment --environment-name ${{ env.ElasticBeanstalk.Env.name }} --version-label "Ver-${{ github.sha }} " 
+              -name: Print Complete CI 
+                run : echo " CI pipeline part finish succesfull"         
