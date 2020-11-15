@@ -19,12 +19,13 @@ jobs:
       - name: echodir
         run: ls -las
       - name: echovars
+        env:
+         localvar: "this local var"
         run: |
           echo "var1 is ${{ env.var1 }}"
           echo "var2 is ${{ env.var2 }}"
           echo "var3 is $localvar"
-       env:
-         localvar: "this local var"
+
 
   checkver: 
 
