@@ -1,0 +1,27 @@
+# Test actions
+#---------- Copyright by DmitriyM
+
+name: testaction
+env:
+  deploy_version: "deploy_version_${{ github.sha }}"
+on:
+  push:
+    branches:
+      - main
+jobs:
+  printdir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: echodir
+        run: ls -las
+
+  checkver: 
+
+    runs-on: ubuntu-latest
+    needs: [printdir]
+    
+    steps: 
+      - name: echo deploy ver
+        run: echo "deploy_version is ${{ env.deploy_version }}"
+      
