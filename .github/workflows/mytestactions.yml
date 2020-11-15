@@ -11,10 +11,21 @@ on:
 jobs:
   printdir:
     runs-on: ubuntu-latest
+    env:
+      var1: " var in jobs 1 "
+      var2: " var in jobs 2 "
     steps:
       - uses: actions/checkout@v2
       - name: echodir
         run: ls -las
+      - name: echovars
+        env:
+         localvar: "this local var"
+        run: |
+          echo "var1 is ${{ env.var1 }}"
+          echo "var2 is ${{ env.var2 }}"
+          echo "var3 is $localvar"
+
 
   checkver: 
 
