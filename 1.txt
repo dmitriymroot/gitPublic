@@ -1,2 +1,6 @@
 ver1
+<<<<<<< HEAD
 ver2
+=======
+ver3
+>>>>>>> fe23b2ba4309a89b9258c6de73ace828a5d05f49
